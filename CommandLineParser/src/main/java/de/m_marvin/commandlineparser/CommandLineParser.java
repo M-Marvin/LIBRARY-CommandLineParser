@@ -1,22 +1,45 @@
 package de.m_marvin.commandlineparser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CommandLineParser {
 	
-	protected Map<String, Object> options = new HashMap<String, Object>();
+	public static record Option(Object defaultValue, String description)  {}
+	public static final Option NONE = new Option("", "");
+
+	protected Map<String, String> alias = new HashMap<String, String>();
+	protected Map<String, Option> options = new HashMap<String, Option>();
+	protected Map<String, Object> values = new HashMap<String, Object>();
 	
 	public void addOption(String name, Object defaultValue) {
-		options.put(name, defaultValue);
+		options.put(name, new Option(defaultValue, ""));
+	}
+
+	public void addOption(String name, Object defaultValue, String description) {
+		options.put(name, new Option(defaultValue, description));
+	}
+
+	public void addAlias(String name, String option) {
+		alias.put(name, option);
 	}
 	
+	public String resolveAlias(String name) {
+		return this.alias.getOrDefault(name, name);
+	}
+
 	public String getOption(String name) {
-		return (String) options.get(name);
+		name = resolveAlias(name);
+		Object value = this.values.getOrDefault(name, options.getOrDefault(name, NONE).defaultValue);
+		return value instanceof String ? (String) value : Boolean.toString((boolean) value);
 	}
 	
 	public boolean getFlag(String name) {
-		return (boolean) options.get(name);
+		name = resolveAlias(name);
+		Object value = this.values.getOrDefault(name, options.getOrDefault(name, NONE).defaultValue);
+		if (value instanceof String) throw new IllegalArgumentException("The option " + name + " is a string argument!");
+		return (boolean) value;
 	}
 	
 	public void parseInput(String[] args) {
@@ -31,9 +54,9 @@ public class CommandLineParser {
 			if (optionName != null) {
 				if (currentOption != null) {
 					if (value.isEmpty()) {
-						options.put(currentOption[0], true);
+						values.put(resolveAlias(currentOption[0]), true);
 					} else {
-						options.put(currentOption[0], value.toString());
+						values.put(resolveAlias(currentOption[0]), value.toString());
 					}
 				}
 				currentOption = optionName;
@@ -48,9 +71,9 @@ public class CommandLineParser {
 		
 		if (currentOption != null) {
 			if (value.isEmpty()) {
-				options.put(currentOption[0], true);
+				values.put(resolveAlias(currentOption[0]), true);
 			} else {
-				options.put(currentOption[0], value.toString());
+				values.put(resolveAlias(currentOption[0]), value.toString());
 			}
 		}
 		
@@ -68,6 +91,32 @@ public class CommandLineParser {
 		} else {
 			return option.split("=");
 		}
+	}
+	
+	public String printHelp() {
+		StringBuilder builder = new StringBuilder();
+		this.options.forEach((name, option) -> {
+			builder
+				.append("-")
+				.append(name);
+			List<String> aliases = this.alias.keySet().stream().filter(alias -> this.alias.get(alias).equals(name)).toList();
+			aliases.forEach(alias -> {
+				builder
+					.append("  --")
+					.append(alias)
+					.append("");
+			});
+			builder
+				.append(aliases.size() > 0 ? "\n" : "")
+				.append("\t")
+				.append(option.description)
+				.append("\n");
+		});
+		return builder.toString();
+	}
+	
+	public void reset() {
+		this.values.clear();
 	}
 	
 }
