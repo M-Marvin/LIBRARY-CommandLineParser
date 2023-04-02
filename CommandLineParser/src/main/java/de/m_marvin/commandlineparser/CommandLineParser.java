@@ -3,6 +3,7 @@ package de.m_marvin.commandlineparser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class CommandLineParser {
 	
@@ -46,6 +47,8 @@ public class CommandLineParser {
 		
 		String[] currentOption = null;
 		StringBuilder value = null;
+		
+		args = Stream.of(args).reduce((a, b) -> a + " " + b).get().split(" ");
 		for (int i = 0; i < args.length; i++) {
 			
 			String argument = args[i];
