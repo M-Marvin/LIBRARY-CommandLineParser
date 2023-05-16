@@ -12,7 +12,7 @@ public class Test {
 		parser.addOption("f", false, "A flag that does something");
 		parser.addAlias("flag", "f");
 		
-		String[] argsE = new String[] {"-o", "test.txt", "--file-in", "test2.txt", "-f" };
+		String[] argsE = new String[] {"-o", "test.txt", "--file-in", "\"test", "-2.txt\"", "-f" };
 		
 		System.out.println(parser.printHelp());
 		

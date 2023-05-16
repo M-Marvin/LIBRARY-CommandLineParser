@@ -92,8 +92,12 @@ public class CommandLineParser {
 		if (option == null) {
 			return null;
 		} else {
-			return option.split("=");
+			return isOptionValid(option.split("=")[0]) ? option.split("=") : null;
 		}
+	}
+	
+	public boolean isOptionValid(String optionName) {
+		return alias.containsKey(optionName) || options.containsKey(optionName);
 	}
 	
 	public String printHelp() {
