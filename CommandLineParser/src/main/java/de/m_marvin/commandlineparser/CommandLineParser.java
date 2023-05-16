@@ -46,7 +46,7 @@ public class CommandLineParser {
 	public void parseInput(String[] args) {
 		
 		String[] currentOption = null;
-		StringBuilder value = null;
+		StringBuilder value = new StringBuilder();
 		
 		args = Stream.of(args).reduce((a, b) -> a + " " + b).get().split(" ");
 		for (int i = 0; i < args.length; i++) {
