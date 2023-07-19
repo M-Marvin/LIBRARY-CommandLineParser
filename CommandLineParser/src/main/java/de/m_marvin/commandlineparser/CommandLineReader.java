@@ -39,13 +39,13 @@ public class CommandLineReader {
 					if (inputLine == null) close();
 					this.inputBuffer.add(inputLine);
 				}
-			} catch (IOException e) {
-				System.err.println("An IOException occured while reading from the InputSteam!");
+			} catch (Exception e) {
+				System.err.println("An Exception was thrown while reading from the InputSteam!");
 				e.printStackTrace();
 			}
 			this.reader.close();
-		} catch (IOException e) {
-			System.err.println("IOException while trying to close input stream!");
+		} catch (Exception e) {
+			System.err.println("Exception while trying to close input stream!");
 			e.printStackTrace();
 		}
 	}
