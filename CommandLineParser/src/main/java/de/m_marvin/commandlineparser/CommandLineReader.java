@@ -36,7 +36,7 @@ public class CommandLineReader {
 			try {
 				while (!this.closeThread) {
 					String inputLine = this.reader.readLine();
-					if (inputLine == null) close();
+					if (inputLine == null) continue;
 					this.inputBuffer.add(inputLine);
 				}
 			} catch (Exception e) {

@@ -38,6 +38,8 @@ public class Test {
 				
 				if (commandLine.get().equals("exit")) {
 					run = false;
+				} else if (commandLine.get().equals("test")) {
+					System.out.println("TESTTEST");
 				}
 				
 			}
