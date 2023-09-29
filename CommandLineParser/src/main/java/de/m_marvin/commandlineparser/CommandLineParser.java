@@ -45,6 +45,8 @@ public class CommandLineParser {
 	
 	public void parseInput(String[] args) {
 		
+		if (args.length == 0) return;
+		
 		String[] currentOption = null;
 		StringBuilder value = new StringBuilder();
 		
@@ -102,22 +104,26 @@ public class CommandLineParser {
 	
 	public String printHelp() {
 		StringBuilder builder = new StringBuilder();
-		this.options.forEach((name, option) -> {
+		int longestName = this.options.keySet().stream().mapToInt(String::length).max().getAsInt();
+		this.options.forEach((name, option) -> {;
+			int spaces = longestName - name.length() + 1;
 			builder
 				.append("-")
 				.append(name);
+			for (int i = 0; i < spaces; i++) builder
+				.append(" ");
+			builder
+				.append("| ")
+				.append(option.description)
+				.append("\n");
 			List<String> aliases = this.alias.keySet().stream().filter(alias -> this.alias.get(alias).equals(name)).toList();
 			aliases.forEach(alias -> {
 				builder
 					.append("  --")
 					.append(alias)
-					.append("");
+					.append("\n");
 			});
-			builder
-				.append(aliases.size() > 0 ? "\n" : "")
-				.append("\t")
-				.append(option.description)
-				.append("\n");
+
 		});
 		return builder.toString();
 	}

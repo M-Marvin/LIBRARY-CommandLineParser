@@ -11,9 +11,11 @@ public class Test {
 	
 		parser.addOption("i", "test.txt", "The path to the input file");
 		parser.addAlias("file-in", "i");
+		parser.addAlias("file-in2", "i");
 		parser.addOption("o", "test-out.txt", "The path to the output file");
 		parser.addOption("f", false, "A flag that does something");
 		parser.addAlias("flag", "f");
+		parser.addOption("test_option_1234", "f", "TEST TEST TEST");
 		
 		String[] argsE = new String[] {"dsff", "-o", "test.txt", "--file-in", "\"test", "-2.txt\"", "-f" };
 		
