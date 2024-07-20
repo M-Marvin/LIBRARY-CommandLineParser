@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.M-Marvin'
-version = '1.0'
+version = '1.1'
 
 // Add additional content to the manifest
 tasks.named('jar') {
@@ -15,7 +15,17 @@ tasks.named('jar') {
 }
 
 java {
+	sourceCompatibility = "1.17"
+	targetCompatibility = "1.17"
     withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Title': project.name
+        attributes 'Implementation-Vendor-Id': 'de.m_marvin'
+    }
 }
 
 publishing {
