@@ -2,8 +2,7 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-group = 'com.github.M-Marvin'
-version = '1.1'
+version = '2.0'
 
 // Add additional content to the manifest
 tasks.named('jar') {
@@ -42,7 +41,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'de.m_marvin.commandlineparser'
-        	artifactId = "commandlineparser"
+        	artifactId = "commandlineutility"
         
 			from components.java
         }

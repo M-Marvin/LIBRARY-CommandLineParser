@@ -1,4 +1,4 @@
-package de.m_marvin.commandlineparser;
+package de.m_marvin.cliutil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,15 +14,27 @@ public class CommandLineReader {
 	protected final Thread readerThread;
 	protected final Deque<String> inputBuffer;
 	protected boolean closeThread = false;
-	
+
 	public CommandLineReader(InputStream inputStream) {
 		this(new BufferedReader(new InputStreamReader(inputStream)));
 	}
-	
+
+	public CommandLineReader(InputStream inputStream, String name) {
+		this(new BufferedReader(new InputStreamReader(inputStream)), name);
+	}
+
 	public CommandLineReader(BufferedReader reader) {
 		this.reader = reader;
 		this.inputBuffer = new ArrayDeque<>();
 		this.readerThread = new Thread(this::handleRead, "CommandLineReader");
+		this.readerThread.setDaemon(true);
+		this.readerThread.start();
+	}
+	
+	public CommandLineReader(BufferedReader reader, String name) {
+		this.reader = reader;
+		this.inputBuffer = new ArrayDeque<>();
+		this.readerThread = new Thread(this::handleRead, "CommandLineReader-" + name);
 		this.readerThread.setDaemon(true);
 		this.readerThread.start();
 	}
