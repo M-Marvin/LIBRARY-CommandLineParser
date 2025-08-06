@@ -39,11 +39,11 @@ public class StringArgument extends CommandArgument<String> {
 	}
 	
 	public static StringArgument singleLine() {
-		return new StringArgument("[^\n\r]", "any_text_with_no_spaces", "\"any text with spaces in quotes\"");
+		return new StringArgument("[^\n\r]+", "any_text_with_no_spaces", "\"any text with spaces in quotes\"");
 	}
 
 	public static StringArgument noSpaces() {
-		return new StringArgument("[^\s]", "example", "words_with_underscores", "numbers_123", "\"in_quotes\"", "!?4%&\\/[]()");
+		return new StringArgument("[^\s]+", "example", "words_with_underscores", "numbers_123", "\"in_quotes\"", "!?4%&\\/[]()");
 	}
 	
 	public static StringArgument singleWord() {

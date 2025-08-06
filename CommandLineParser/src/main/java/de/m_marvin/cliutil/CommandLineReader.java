@@ -49,7 +49,10 @@ public class CommandLineReader {
 				while (!this.closeThread) {
 					String inputLine = this.reader.readLine();
 					if (inputLine == null) continue;
-					this.inputBuffer.add(inputLine);
+					synchronized (this.inputBuffer) {
+						this.inputBuffer.add(inputLine);
+						this.inputBuffer.notify();
+					}
 				}
 			} catch (Exception e) {
 				System.err.println("An Exception was thrown while reading from the InputSteam!");
@@ -60,6 +63,9 @@ public class CommandLineReader {
 			System.err.println("Exception while trying to close input stream!");
 			e.printStackTrace();
 		}
+		synchronized (this.inputBuffer) {
+			this.inputBuffer.notifyAll();
+		}
 	}
 	
 	public Optional<String> readLine() {
@@ -68,6 +74,15 @@ public class CommandLineReader {
 		} else {
 			return Optional.of(this.inputBuffer.pop());
 		}
+	}
+	
+	public String waitForLine() {
+		Optional<String> line;
+		synchronized (this.inputBuffer) {
+			while ((line = readLine()).isEmpty() && this.readerThread.isAlive())
+				try { this.inputBuffer.wait(); } catch (InterruptedException e) {}
+		}
+		return line.orElse(null);
 	}
 	
 }
