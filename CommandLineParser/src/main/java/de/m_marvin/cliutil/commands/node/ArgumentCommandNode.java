@@ -41,11 +41,14 @@ public class ArgumentCommandNode<T extends CommandContext, V> extends CommandNod
 	@Override
 	protected Collection<String> getSuggestions(T context, String input) {
 		// Return example inputs if nothing was typed yet, return name of this property otherwise
+		Collection<String> suggestions;
 		if (input.isEmpty()) {
-			return this.argument.getExampleInput();
-		} else {
-			return Collections.singleton(String.format("[%s]", this.name));
+			suggestions = this.argument.getExampleInput();
+			if (!suggestions.isEmpty()) return suggestions;
 		}
+		suggestions = this.argument.getCompletitionSuggestions(input);
+		if (!suggestions.isEmpty()) return suggestions;
+		return Collections.singleton(String.format("[%s]", this.name));
 	}
 	
 }

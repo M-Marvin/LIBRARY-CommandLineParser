@@ -2,7 +2,10 @@ package de.m_marvin.cliutil.commands.node;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import de.m_marvin.cliutil.StringUtility;
 import de.m_marvin.cliutil.commands.CommandContext;
@@ -40,6 +43,14 @@ public abstract class CommandNode<T extends CommandContext> {
 	private ContextModifier<T> modifier = null;
 	private Command<T> command = null;
 	private List<CommandNode<T>> children = new ArrayList<>();
+	private List<Function<T, Collection<CommandNode<T>>>> dynamicChildren = new ArrayList<>();
+	
+	protected Collection<CommandNode<T>> contextualNodes(T context) {
+		return Stream.of(
+				this.dynamicChildren.stream().map(dn -> dn.apply(context)).flatMap(Collection::stream),
+				this.children.stream()
+		).flatMap(s -> s).toList();
+	}
 	
 	protected NodeResult accept(T context, String[] args, int off, boolean suggest) throws CommandException {
 		if (!suggest && this.modifier != null) {
@@ -58,7 +69,7 @@ public abstract class CommandNode<T extends CommandContext> {
 		} else {
 			if (suggest) {
 				List<String> suggestions = new ArrayList<String>();
-				for (CommandNode<T> node : this.children) {
+				for (CommandNode<T> node : contextualNodes(context)) {
 					NodeResult result = node.accept(context, args, off + 1, true);
 					if (result.nodeResult()) {
 						suggestions.addAll(result.suggestions());
@@ -66,7 +77,7 @@ public abstract class CommandNode<T extends CommandContext> {
 				}
 				return NodeResult.suggest(suggestions);
 			} else {
-				for (CommandNode<T> node : this.children) {
+				for (CommandNode<T> node : contextualNodes(context)) {
 					NodeResult result = node.accept(context, args, off + 1, false);
 					if (result.nodeResult()) return result;
 				}
@@ -82,8 +93,18 @@ public abstract class CommandNode<T extends CommandContext> {
 		return this;
 	}
 	
+	public CommandNode<T> then(Function<T, CommandNode<T>> node) {
+		return thenAll(context -> Collections.singleton(node.apply(context)));
+	}
+	
+	public CommandNode<T> thenAll(Function<T, Collection<CommandNode<T>>> nodes) {
+		this.dynamicChildren.add(nodes);
+		return this;
+	}
+	
 	public CommandNode<T> fork(CommandNode<T> node) {
-		this.children = node.children;
+		this.children.addAll(node.children);
+		this.dynamicChildren.addAll(node.dynamicChildren);
 		return this;
 	}
 	
