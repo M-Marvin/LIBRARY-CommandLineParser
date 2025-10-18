@@ -120,9 +120,13 @@ public class StringUtility {
 	}
 	
 	public static String join(String... args) {
+		return joinWith(' ', args);
+	}
+
+	public static String joinWith(char seperator, String... args) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < args.length; i++) {
-			if (i != 0) buf.append(' ');
+			if (i != 0) buf.append(seperator);
 			buf.append(args[i]);
 		}
 		return buf.toString();

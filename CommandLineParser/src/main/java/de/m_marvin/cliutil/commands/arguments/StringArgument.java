@@ -20,13 +20,9 @@ public class StringArgument extends CommandArgument<String> {
 	
 	@Override
 	public String parse(String str) throws CommandArgumentException {
-		try {
-			String value = StringUtility.unquote(str);
-			if (this.filter != null && !this.filter.matcher(value).matches()) throw new CommandArgumentException("string argument invalid: %s does not match %s", str, StringUtility.escape(this.filter.pattern()));
-			return value;
-		} catch (NumberFormatException e) {
-			return null;
-		}
+		String value = StringUtility.unquote(str);
+		if (this.filter != null && !this.filter.matcher(value).matches()) throw new CommandArgumentException("string argument invalid: %s does not match %s", str, StringUtility.escape(this.filter.pattern()));
+		return value;
 	}
 	
 	@Override

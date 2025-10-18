@@ -29,4 +29,9 @@ public class LiteralCommandNode<T extends CommandContext> extends CommandNode<T>
 		return Collections.singleton(this.name);
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("<%s>", this.name);
+	}
+	
 }

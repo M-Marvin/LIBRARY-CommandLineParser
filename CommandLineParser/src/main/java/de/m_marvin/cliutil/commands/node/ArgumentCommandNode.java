@@ -50,5 +50,10 @@ public class ArgumentCommandNode<T extends CommandContext, V> extends CommandNod
 		if (!suggestions.isEmpty()) return suggestions;
 		return Collections.singleton(String.format("[%s]", this.name));
 	}
+
+	@Override
+	public String toString() {
+		return String.format("<[%s] (%s)>", this.name, this.argument.getClass().getSimpleName());
+	}
 	
 }

@@ -53,7 +53,7 @@ public abstract class CommandNode<T extends CommandContext> {
 	}
 	
 	protected NodeResult accept(T context, String[] args, int off, boolean suggest) throws CommandException {
-		if (!suggest && this.modifier != null) {
+		if (this.modifier != null) {
 			this.modifier.modify(context);
 		}
 		if (args.length == off + 1) {
