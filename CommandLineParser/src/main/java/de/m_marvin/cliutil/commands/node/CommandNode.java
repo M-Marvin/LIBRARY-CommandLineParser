@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import de.m_marvin.cliutil.StringUtility;
 import de.m_marvin.cliutil.commands.CommandContext;
 import de.m_marvin.cliutil.exception.CommandException;
-import de.m_marvin.cliutil.exception.CommandSynthaxException;
+import de.m_marvin.cliutil.exception.CommandSyntaxException;
 
 public abstract class CommandNode<T extends CommandContext> {
 	
@@ -53,9 +53,8 @@ public abstract class CommandNode<T extends CommandContext> {
 	}
 	
 	protected NodeResult accept(T context, String[] args, int off, boolean suggest) throws CommandException {
-		if (this.modifier != null) {
+		if (this.modifier != null)
 			this.modifier.modify(context);
-		}
 		if (args.length == off + 1) {
 			if (suggest) {
 				return NodeResult.suggest(getSuggestions(context, args[off]));
@@ -63,7 +62,7 @@ public abstract class CommandNode<T extends CommandContext> {
 				if (this.command != null) {
 					return NodeResult.command(this.command.run(context));
 				} else {
-					throw CommandSynthaxException.args("incomplete command", args, off);
+					throw CommandSyntaxException.args("incomplete command", args, off);
 				}
 			}
 		} else {
@@ -83,7 +82,7 @@ public abstract class CommandNode<T extends CommandContext> {
 				}
 			}
 		}
-		throw CommandSynthaxException.args("invalid command", args, off + 1);
+		throw CommandSyntaxException.args("invalid command", args, off + 1);
 	}
 	
 	protected abstract Collection<String> getSuggestions(T context, String input);

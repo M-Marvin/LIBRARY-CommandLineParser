@@ -16,7 +16,7 @@ public class LiteralCommandNode<T extends CommandContext> extends CommandNode<T>
 	
 	@Override
 	public NodeResult accept(T context, String[] args, int off, boolean suggest) throws CommandException {
-		if (suggest) {
+		if (suggest && args.length == off + 1) {
 			if (!this.name.startsWith(args[off])) return NodeResult.noMatch();
 		} else {
 			if (!args[off].equals(this.name)) return NodeResult.noMatch();
