@@ -29,7 +29,7 @@ public class CommandArgumentParser {
 	}
 	
 	private Map<Integer, String> shorts = new HashMap<>();
-	private Map<String, Option<?>> options = new HashMap<>();
+	private Map<String, Option<?>> options = new LinkedHashMap<>();
 	
 	public <T> void addOption(String name, T value, Function<String, T> parser, Function<T, String> printer, String description) {
 		this.options.put(name, new Option<T>(parser, printer, value, description));
