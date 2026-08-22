@@ -43,7 +43,7 @@ public class CommandLineReader {
 		this.closeThread = true;
 	}
 	
-	public void handleRead() {
+	private void handleRead() {
 		try {
 			try {
 				while (!this.closeThread) {
